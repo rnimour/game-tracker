@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
 	id("org.springframework.boot") version "3.3.0"
 	id("io.spring.dependency-management") version "1.1.5"
@@ -48,6 +51,20 @@ kotlin {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks {
+	test {
+		testLogging {
+			// how else could we solve exceptions without their stack traces?
+			showStackTraces = true
+			exceptionFormat = TestExceptionFormat.FULL
+			// to see output of println
+			events(TestLogEvent.STANDARD_OUT)
+			// showStandardStreams = true
+		}
+	}
+}
+
 
 idea {
 	module {

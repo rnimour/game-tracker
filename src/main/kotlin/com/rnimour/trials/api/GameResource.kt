@@ -2,6 +2,7 @@ package com.rnimour.trials.api
 
 import com.rnimour.trials.components.GameRepository
 import com.rnimour.trials.components.GameService
+import com.rnimour.trials.entities.Game
 import com.rnimour.trials.entities.GameDTOCreateRequest
 import com.rnimour.trials.entities.GameDTOResponse
 import com.rnimour.trials.entities.GameDTOUpdateRequest
@@ -27,7 +28,7 @@ class GameResource(
 
     @GetMapping("/{id}")
     fun getGame(@PathVariable id: Long): GameDTOResponse? {
-        val game = gameRepository.findById(id).orElse(null) ?: return null // TODO return 404 if game not found
+        val game = resolveGame(id)
         return gameService.transform(game)
     }
 
@@ -36,15 +37,17 @@ class GameResource(
         @PathVariable id: Long,
         @RequestBody gameRequest: GameDTOUpdateRequest,
     ): GameDTOResponse? {
-        val game = gameRepository.findById(id).orElse(null) ?: return null // TODO return 404 if game not found
+        val game = resolveGame(id)
         gameService.updateGame(game, gameRequest)
         return gameService.transform(game)
     }
 
     @DeleteMapping("/{id}")
     fun deleteGame(@PathVariable id: Long): GameDTOResponse? {
-        val game = gameRepository.findById(id).orElse(null) ?: return null // TODO return 404 if game not found
+        val game = resolveGame(id)
         gameRepository.deleteById(id)
         return gameService.transform(game)
     }
+
+    private fun resolveGame(id: Long): Game = gameRepository.findById(id).orElseThrow { GameNotFoundException(id) }
 }

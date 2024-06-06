@@ -46,7 +46,7 @@ insert into game (id,
 values (3,
         'Factorio',
         'PLAYING',
-        2021,
+        2016,
         'Wube Software',
         null,
         'Simulation');
