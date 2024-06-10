@@ -4,9 +4,12 @@ import com.rnimour.trials.components.GameRepository
 import com.rnimour.trials.components.GameService
 import com.rnimour.trials.entities.Game
 import com.rnimour.trials.entities.GameDTOCreateRequest
-import com.rnimour.trials.entities.GameDTOResponse
 import com.rnimour.trials.entities.GameDTOUpdateRequest
+import org.springframework.http.ResponseEntity
+import org.springframework.http.ResponseEntity.created
+import org.springframework.http.ResponseEntity.ok
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 
 @RestController
 @RequestMapping("/api/games")
@@ -16,37 +19,36 @@ class GameResource(
 ) {
 
     @PostMapping
-    fun createGame(@RequestBody gameRequest: GameDTOCreateRequest): GameDTOResponse {
+    fun createGame(@RequestBody gameRequest: GameDTOCreateRequest): ResponseEntity<Game> {
         val game = gameService.create(gameRequest)
-        return gameService.transform(game)
+        return created(URI("/api/games/${game.id}")).body(game)
     }
 
     @GetMapping
-    fun getAllGames(): List<GameDTOResponse> {
-        return gameRepository.findAll().map { gameService.transform(it) }
+    fun getAllGames(): List<Game> {
+        return gameRepository.findAll()
     }
 
     @GetMapping("/{id}")
-    fun getGame(@PathVariable id: Long): GameDTOResponse? {
+    fun getGame(@PathVariable id: Long): ResponseEntity<Game> {
         val game = resolveGame(id)
-        return gameService.transform(game)
+        return ok(game)
     }
 
     @PatchMapping("/{id}")
     fun updateGame(
         @PathVariable id: Long,
         @RequestBody gameRequest: GameDTOUpdateRequest,
-    ): GameDTOResponse? {
+    ): ResponseEntity<Game> {
         val game = resolveGame(id)
-        gameService.updateGame(game, gameRequest)
-        return gameService.transform(game)
+        return ok(gameService.updateGame(game, gameRequest))
     }
 
     @DeleteMapping("/{id}")
-    fun deleteGame(@PathVariable id: Long): GameDTOResponse? {
+    fun deleteGame(@PathVariable id: Long): ResponseEntity<Game> {
         val game = resolveGame(id)
         gameRepository.deleteById(id)
-        return gameService.transform(game)
+        return ok(game)
     }
 
     private fun resolveGame(id: Long): Game = gameRepository.findById(id).orElseThrow { GameNotFoundException(id) }

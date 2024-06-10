@@ -19,17 +19,17 @@ data class GameDTOCreateRequest(
 
 data class GameDTOUpdateRequest(
     @JsonProperty("name")
-    var name: String?,
+    var name: String? = null,
     @JsonProperty("playStatus")
-    var playStatus: PlayStatus?,
+    var playStatus: PlayStatus? = null,
     @JsonProperty("releaseYear")
-    var releaseYear: Int?,
+    var releaseYear: Int? = null,
     @JsonProperty("developer")
-    var developer: String?,
+    var developer: String? = null,
     @JsonProperty("series")
-    var series: String?,
+    var series: String? = null,
     @JsonProperty("genre")
-    var genre: String?,
+    var genre: String? = null,
 )
 
 data class GameDTOResponse(

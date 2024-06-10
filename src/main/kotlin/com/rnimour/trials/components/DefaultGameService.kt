@@ -38,7 +38,7 @@ class DefaultGameService(private val gameRepository: GameRepository) : GameServi
     override fun updateGame(
         game: Game,
         gameRequest: GameDTOUpdateRequest,
-    ) {
+    ): Game {
         with(game) {
             name = gameRequest.name ?: name
             playStatus = gameRequest.playStatus ?: playStatus
@@ -48,6 +48,6 @@ class DefaultGameService(private val gameRepository: GameRepository) : GameServi
             genre = gameRequest.genre ?: genre
 
         }
-        gameRepository.save(game)
+        return gameRepository.save(game)
     }
 }

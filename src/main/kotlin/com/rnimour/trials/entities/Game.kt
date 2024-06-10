@@ -5,6 +5,9 @@ import jakarta.persistence.*
 
 @Entity
 data class Game(
+    @Id
+    @GeneratedValue
+    val id: Long? = null,
     @Column(nullable = false)
     var name: String,
     @Column(nullable = false)
@@ -16,9 +19,6 @@ data class Game(
     var developer: String,
     var series: String? = null,
     var genre: String? = null,
-    @Id
-    @GeneratedValue
-    val id: Long? = null,
 )
 
 enum class PlayStatus(private val description: String) {

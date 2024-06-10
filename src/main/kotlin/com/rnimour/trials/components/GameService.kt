@@ -14,7 +14,7 @@ interface GameService {
     /**
      * Update (and persist) a Game Entity from a request
      */
-    fun updateGame(game: Game, gameRequest: GameDTOUpdateRequest)
+    fun updateGame(game: Game, gameRequest: GameDTOUpdateRequest): Game
 
     /**
      * Transform a Game Entity to a GameDTOResponse
