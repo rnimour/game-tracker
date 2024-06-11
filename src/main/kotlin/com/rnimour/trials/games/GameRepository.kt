@@ -1,6 +1,5 @@
-package com.rnimour.trials.components
+package com.rnimour.trials.games
 
-import com.rnimour.trials.entities.Game
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface GameRepository: JpaRepository<Game, Long>

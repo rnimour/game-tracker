@@ -1,9 +1,4 @@
-package com.rnimour.trials.components
-
-import com.rnimour.trials.entities.Game
-import com.rnimour.trials.entities.GameDTOCreateRequest
-import com.rnimour.trials.entities.GameDTOResponse
-import com.rnimour.trials.entities.GameDTOUpdateRequest
+package com.rnimour.trials.games
 
 interface GameService {
     /**

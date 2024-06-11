@@ -1,6 +1,6 @@
 package com.rnimour.trials
 
-import com.rnimour.trials.components.GameRepository
+import com.rnimour.trials.games.GameRepository
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

@@ -1,10 +1,6 @@
-package com.rnimour.trials.api
+package com.rnimour.trials.web.games
 
-import com.rnimour.trials.components.GameRepository
-import com.rnimour.trials.components.GameService
-import com.rnimour.trials.entities.Game
-import com.rnimour.trials.entities.GameDTOCreateRequest
-import com.rnimour.trials.entities.GameDTOUpdateRequest
+import com.rnimour.trials.games.*
 import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.created
 import org.springframework.http.ResponseEntity.ok

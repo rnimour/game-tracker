@@ -1,4 +1,4 @@
-package com.rnimour.trials.entities
+package com.rnimour.trials.games
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

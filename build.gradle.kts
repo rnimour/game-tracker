@@ -28,10 +28,9 @@ repositories {
 dependencies {
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	// implementation("org.springframework.boot:spring-boot-starter-jersey")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	// implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.zalando:problem-spring-web:0.29.1")
 
 	// in-memory database
 	runtimeOnly("com.h2database:h2")
@@ -41,6 +40,7 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("io.mockk:mockk:1.13.11")
+	// for easy JSON (de)serializing in test
 	testImplementation("com.google.code.gson:gson:2.8.9")
 }
 

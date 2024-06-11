@@ -1,6 +1,6 @@
-package com.rnimour.trials.entities
+package com.rnimour.trials.games
 
-import com.rnimour.trials.entities.PlayStatus.NOT_STARTED
+import com.rnimour.trials.games.PlayStatus.NOT_STARTED
 import jakarta.persistence.*
 
 @Entity

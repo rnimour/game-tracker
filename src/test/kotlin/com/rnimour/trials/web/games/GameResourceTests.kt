@@ -1,14 +1,10 @@
-package com.rnimour.trials.api
+package com.rnimour.trials.web.games
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.rnimour.trials.components.GameRepository
-import com.rnimour.trials.components.GameService
-import com.rnimour.trials.entities.Game
-import com.rnimour.trials.entities.GameDTOCreateRequest
-import com.rnimour.trials.entities.GameDTOUpdateRequest
-import com.rnimour.trials.entities.PlayStatus.COMPLETED
-import com.rnimour.trials.entities.PlayStatus.PLAYING
+import com.rnimour.trials.games.*
+import com.rnimour.trials.games.PlayStatus.COMPLETED
+import com.rnimour.trials.games.PlayStatus.PLAYING
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,12 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.*
 import java.util.*
-
-// easy way to convert objects to JSON
-val prettyGson: Gson = GsonBuilder().setPrettyPrinting().create()
-fun GameDTOCreateRequest.toJson(): String = prettyGson.toJson(this)
-fun GameDTOUpdateRequest.toJson(): String = prettyGson.toJson(this)
-fun Game.toJson(): String = prettyGson.toJson(this)
 
 @WebMvcTest
 class GameResourceTests {
@@ -136,7 +126,13 @@ class GameResourceTests {
                 }
             """.trimIndent()
         }.andExpectAll {
-            status { isBadRequest() } // TODO: make a neat error message which tells user which field is missing.
+            status { isBadRequest() } // TODO: make a neat error message which tells user which field is missing. Use Zalando Problem
         }
     }
 }
+
+// easy way to convert objects to JSON
+val prettyGson: Gson = GsonBuilder().setPrettyPrinting().create()
+fun GameDTOCreateRequest.toJson(): String = prettyGson.toJson(this)
+fun GameDTOUpdateRequest.toJson(): String = prettyGson.toJson(this)
+fun Game.toJson(): String = prettyGson.toJson(this)
