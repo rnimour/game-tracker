@@ -6,7 +6,7 @@ import com.rnimour.trials.games.*
 import com.rnimour.trials.games.PlayStatus.COMPLETED
 import com.rnimour.trials.games.PlayStatus.PLAYING
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -48,7 +48,7 @@ class GameResourceTests {
     @Test
     fun testCreateGame() {
 
-        `when`(gameService.create(gameDTOCreateRequest)).thenReturn(game)
+        whenever(gameService.create(gameDTOCreateRequest)).thenReturn(game)
 
         mockMvc.post("/api/games") {
             contentType = APPLICATION_JSON
@@ -64,7 +64,7 @@ class GameResourceTests {
     @Test
     fun testReadGame() {
 
-        `when`(gameRepository.findById(1L)).thenReturn(Optional.of(game))
+        whenever(gameRepository.findById(1L)).thenReturn(Optional.of(game))
 
         mockMvc.get("/api/games/1") {
             contentType = APPLICATION_JSON
@@ -85,8 +85,8 @@ class GameResourceTests {
         val updateGameRequest = GameDTOUpdateRequest(playStatus = updatedPlayStatus, genre = updatedGenre)
         val updatedGame = game.copy(playStatus = updatedPlayStatus, genre = updatedGenre)
 
-        `when`(gameRepository.findById(1L)).thenReturn(Optional.of(game))
-        `when`(gameService.updateGame(game, updateGameRequest)).thenReturn(updatedGame)
+        whenever(gameRepository.findById(1L)).thenReturn(Optional.of(game))
+        whenever(gameService.updateGame(game, updateGameRequest)).thenReturn(updatedGame)
 
         mockMvc.patch("/api/games/1") {
             contentType = APPLICATION_JSON
@@ -100,7 +100,7 @@ class GameResourceTests {
     @Test
     fun testDeleteGame() {
 
-        `when`(gameRepository.findById(1L)).thenReturn(Optional.of(game))
+        whenever(gameRepository.findById(1L)).thenReturn(Optional.of(game))
 
         mockMvc.delete("/api/games/1") {
             contentType = APPLICATION_JSON

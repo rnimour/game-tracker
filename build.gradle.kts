@@ -40,6 +40,8 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("io.mockk:mockk:1.13.11")
+	// For whenever instead of `when`
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
 	// for easy JSON (de)serializing in test
 	testImplementation("com.google.code.gson:gson:2.8.9")
 }
