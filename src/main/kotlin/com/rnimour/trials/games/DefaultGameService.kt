@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component
 class DefaultGameService(private val gameRepository: GameRepository) : GameService {
 
     override fun create(gameRequest: GameDTOCreateRequest): Game {
+        if (gameRepository.findByName(gameRequest.name) != null) {
+            throw GameAlreadyExistsException(gameRequest.name)
+        }
         val game = with(gameRequest) {
             Game(
                 name = name,
@@ -46,4 +49,8 @@ class DefaultGameService(private val gameRepository: GameRepository) : GameServi
         }
         return gameRepository.save(game)
     }
+
+    override fun findAll(): List<Game> = gameRepository.findAll()
+    override fun deleteById(id: Long) = gameRepository.deleteById(id)
+    override fun findById(id: Long): Game = gameRepository.findById(id).orElseThrow { GameNotFoundException(id) }
 }

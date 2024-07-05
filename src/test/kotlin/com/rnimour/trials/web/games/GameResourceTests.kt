@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.rnimour.trials.games.*
 import com.rnimour.trials.games.PlayStatus.COMPLETED
 import com.rnimour.trials.games.PlayStatus.PLAYING
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.*
-import java.util.*
+
+// easy way to convert objects to JSON
+val prettyGson: Gson = GsonBuilder().setPrettyPrinting().create()
+fun GameDTOCreateRequest.toJson(): String = prettyGson.toJson(this)
+fun GameDTOUpdateRequest.toJson(): String = prettyGson.toJson(this)
+fun Game.toJson(): String = prettyGson.toJson(this)
 
 @WebMvcTest
 class GameResourceTests {
@@ -48,7 +54,8 @@ class GameResourceTests {
     @Test
     fun testCreateGame() {
 
-        whenever(gameService.create(gameDTOCreateRequest)).thenReturn(game)
+        whenever(gameService.create(gameDTOCreateRequest))
+            .thenReturn(game)
 
         mockMvc.post("/api/games") {
             contentType = APPLICATION_JSON
@@ -56,15 +63,34 @@ class GameResourceTests {
         }.andExpectAll {
             status { isCreated() }
             header { string("Location", "/api/games/${game.id}") }
-            content { contentType(APPLICATION_JSON) }
-            content { json(game.toJson()) }
+            content {
+                contentType(APPLICATION_JSON)
+                json(game.toJson())
+            }
+        }
+    }
+
+    @Test
+    fun testCreateGameWhichAlreadyExists() {
+
+        whenever(gameService.create(gameDTOCreateRequest))
+            .thenThrow(GameAlreadyExistsException(game.name))
+
+        // Create game with name which already exists
+        mockMvc.post("/api/games") {
+            contentType = APPLICATION_JSON
+            content = gameDTOCreateRequest.toJson()
+        }.andExpectAll {
+            status { isConflict() }
+            content { string(Matchers.containsString("Game with name ${game.name} already exists")) }
         }
     }
 
     @Test
     fun testReadGame() {
 
-        whenever(gameRepository.findById(1L)).thenReturn(Optional.of(game))
+        whenever(gameService.findById(1L))
+            .thenReturn(game)
 
         mockMvc.get("/api/games/1") {
             contentType = APPLICATION_JSON
@@ -85,8 +111,10 @@ class GameResourceTests {
         val updateGameRequest = GameDTOUpdateRequest(playStatus = updatedPlayStatus, genre = updatedGenre)
         val updatedGame = game.copy(playStatus = updatedPlayStatus, genre = updatedGenre)
 
-        whenever(gameRepository.findById(1L)).thenReturn(Optional.of(game))
-        whenever(gameService.updateGame(game, updateGameRequest)).thenReturn(updatedGame)
+        whenever(gameService.findById(1L))
+            .thenReturn(game)
+        whenever(gameService.updateGame(game, updateGameRequest))
+            .thenReturn(updatedGame)
 
         mockMvc.patch("/api/games/1") {
             contentType = APPLICATION_JSON
@@ -100,10 +128,9 @@ class GameResourceTests {
     @Test
     fun testDeleteGame() {
 
-        whenever(gameRepository.findById(1L)).thenReturn(Optional.of(game))
+        whenever(gameService.findById(1L)).thenReturn(game)
 
         mockMvc.delete("/api/games/1") {
-            contentType = APPLICATION_JSON
         }.andExpectAll {
             status { isOk() }
             content { json(game.toJson()) }
@@ -126,13 +153,11 @@ class GameResourceTests {
                 }
             """.trimIndent()
         }.andExpectAll {
-            status { isBadRequest() } // TODO: make a neat error message which tells user which field is missing. Use Zalando Problem
+            status { isBadRequest() }
+            content {
+                string(Matchers.containsString("problem: Parameter specified as non-null is null"))
+                string(Matchers.containsString("parameter name"))
+            }
         }
     }
 }
-
-// easy way to convert objects to JSON
-val prettyGson: Gson = GsonBuilder().setPrettyPrinting().create()
-fun GameDTOCreateRequest.toJson(): String = prettyGson.toJson(this)
-fun GameDTOUpdateRequest.toJson(): String = prettyGson.toJson(this)
-fun Game.toJson(): String = prettyGson.toJson(this)

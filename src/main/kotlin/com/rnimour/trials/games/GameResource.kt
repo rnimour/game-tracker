@@ -1,6 +1,5 @@
-package com.rnimour.trials.web.games
+package com.rnimour.trials.games
 
-import com.rnimour.trials.games.*
 import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.created
 import org.springframework.http.ResponseEntity.ok
@@ -10,7 +9,6 @@ import java.net.URI
 @RestController
 @RequestMapping("/api/games")
 class GameResource(
-    val gameRepository: GameRepository,
     val gameService: GameService,
 ) {
 
@@ -21,31 +19,24 @@ class GameResource(
     }
 
     @GetMapping
-    fun getAllGames(): List<Game> {
-        return gameRepository.findAll()
-    }
+    fun getAllGames(): List<Game> = gameService.findAll()
 
     @GetMapping("/{id}")
-    fun getGame(@PathVariable id: Long): ResponseEntity<Game> {
-        val game = resolveGame(id)
-        return ok(game)
-    }
+    fun getGame(@PathVariable id: Long): ResponseEntity<Game> = ok(gameService.findById(id))
 
     @PatchMapping("/{id}")
     fun updateGame(
         @PathVariable id: Long,
         @RequestBody gameRequest: GameDTOUpdateRequest,
     ): ResponseEntity<Game> {
-        val game = resolveGame(id)
+        val game = gameService.findById(id)
         return ok(gameService.updateGame(game, gameRequest))
     }
 
     @DeleteMapping("/{id}")
     fun deleteGame(@PathVariable id: Long): ResponseEntity<Game> {
-        val game = resolveGame(id)
-        gameRepository.deleteById(id)
+        val game = gameService.findById(id)
+        gameService.deleteById(id)
         return ok(game)
     }
-
-    private fun resolveGame(id: Long): Game = gameRepository.findById(id).orElseThrow { GameNotFoundException(id) }
 }
