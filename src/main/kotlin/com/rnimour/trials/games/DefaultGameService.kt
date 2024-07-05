@@ -22,7 +22,7 @@ class DefaultGameService(private val gameRepository: GameRepository) : GameServi
         return gameRepository.save(game)
     }
 
-    override fun transform(game: Game) = with(game) {
+    override fun transform(game: Game): GameDTOResponse = with(game) {
         GameDTOResponse(
             id = id ?: throw IllegalArgumentException("Game not persisted"),
             name = name,

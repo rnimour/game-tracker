@@ -3,10 +3,13 @@ package com.rnimour.trials.games
 import com.rnimour.trials.games.PlayStatus.NOT_STARTED
 import jakarta.persistence.*
 
+private const val GAME_SEQ = "game_seq"
+
 @Entity
 data class Game(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GAME_SEQ)
+    @SequenceGenerator(name = GAME_SEQ, sequenceName = GAME_SEQ, allocationSize = 1, initialValue = 100)
     val id: Long? = null,
     @Column(nullable = false)
     var name: String,
