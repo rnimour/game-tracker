@@ -60,7 +60,7 @@ insert into game (id,
                    genre)
 values (4,
         'Tunic',
-        'PLAYING',
+        'COMPLETED',
         2022,
         'Isometricorp game',
         null,
