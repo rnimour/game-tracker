@@ -31,6 +31,12 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.zalando:problem-spring-web:0.29.1")
+	// module for ProblemModule (to register it in the ObjectMapper bean)
+	implementation("org.zalando:jackson-datatype-problem:0.27.1")
+	// to make Jackson (de)serialization work seamlessly with Kotlin, add kotlinModule() to the ObjectMapper bean
+	// Previously, a default constructor must have existed, but now singel constructor classes can be used automatically
+	// see https://github.com/FasterXML/jackson-module-kotlin
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.+")
 
 	// in-memory database
 	runtimeOnly("com.h2database:h2")

@@ -1,31 +1,31 @@
 package com.rnimour.trials.games
 
-import com.fasterxml.jackson.annotation.JsonProperty
+// jackson-module-kotlin automatically infers JSON property names for these DTO objects
 
 data class GameDTOCreateRequest(
-    @JsonProperty var name: String,
-    @JsonProperty var playStatus: PlayStatus,
-    @JsonProperty var releaseYear: Int,
-    @JsonProperty var developer: String,
-    @JsonProperty var series: String?,
-    @JsonProperty var genre: String?,
+    var name: String,
+    var playStatus: PlayStatus,
+    var releaseYear: Int,
+    var developer: String,
+    var series: String?,
+    var genre: String?,
 )
 
 data class GameDTOUpdateRequest(
-    @JsonProperty var name: String? = null,
-    @JsonProperty var playStatus: PlayStatus? = null,
-    @JsonProperty var releaseYear: Int? = null,
-    @JsonProperty var developer: String? = null,
-    @JsonProperty var series: String? = null,
-    @JsonProperty var genre: String? = null,
+    var name: String? = null,
+    var playStatus: PlayStatus? = null,
+    var releaseYear: Int? = null,
+    var developer: String? = null,
+    var series: String? = null,
+    var genre: String? = null,
 )
 
 data class GameDTOResponse(
-    @JsonProperty var id: Long?,
-    @JsonProperty var name: String?,
-    @JsonProperty var playStatus: PlayStatus?,
-    @JsonProperty var releaseYear: Int?,
-    @JsonProperty var developer: String?,
-    @JsonProperty var series: String?,
-    @JsonProperty var genre: String?,
+    var id: Long?,
+    var name: String?,
+    var playStatus: PlayStatus?,
+    var releaseYear: Int?,
+    var developer: String?,
+    var series: String?,
+    var genre: String?,
 )
