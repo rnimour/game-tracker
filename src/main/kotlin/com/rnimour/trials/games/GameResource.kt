@@ -19,7 +19,7 @@ class GameResource(
     }
 
     @GetMapping
-    fun getAllGames(): List<Game> = gameService.findAll()
+    fun getAllGames(): ResponseEntity<List<Game>> = ok(gameService.findAll())
 
     @GetMapping("/{id}")
     fun getGame(@PathVariable id: Long): ResponseEntity<Game> = ok(gameService.findById(id))
@@ -30,7 +30,8 @@ class GameResource(
         @RequestBody gameRequest: GameDTOUpdateRequest,
     ): ResponseEntity<Game> {
         val game = gameService.findById(id)
-        return ok(gameService.updateGame(game, gameRequest))
+        val updatedGame = gameService.updateGame(game, gameRequest)
+        return ok(updatedGame)
     }
 
     @DeleteMapping("/{id}")

@@ -1,8 +1,7 @@
-package com.rnimour.trials.web.games
+package com.rnimour.trials.games
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.rnimour.trials.games.*
 import com.rnimour.trials.games.PlayStatus.COMPLETED
 import com.rnimour.trials.games.PlayStatus.PLAYING
 import org.hamcrest.Matchers

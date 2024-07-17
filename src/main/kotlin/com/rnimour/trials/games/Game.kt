@@ -3,6 +3,7 @@ package com.rnimour.trials.games
 import com.rnimour.trials.games.PlayStatus.NOT_STARTED
 import jakarta.persistence.*
 
+// give a custom sequence with different initial value, because we initialize with some data (see data.sql)
 private const val GAME_SEQ = "game_seq"
 
 @Entity

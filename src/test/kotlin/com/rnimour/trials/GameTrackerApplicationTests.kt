@@ -17,9 +17,9 @@ class GameTrackerApplicationTests {
     @Test
     fun contextLoads() {
         // Just print all games to see if the database initialization is working
-        gameRepository.findAll().also {
-            assertThat("should find some games", it, not(empty()))
-        }.forEach(::println)
+        gameRepository.findAll()
+            .also {assertThat("should find some games", it, not(empty())) }
+            .forEach(::println)
     }
 
 }
