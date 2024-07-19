@@ -2,7 +2,7 @@ add features:
  - [x] @ControllerAdvice
  - [x] @WebMvcTest
  - [x] @DataJPATest
- - [ ] use Zalando Problem for error handling (more useful error messages than HTTP 400 bad request)
+ - [x] use Zalando Problem for error handling (more useful error messages than HTTP 400 bad request)
      see https://github.com/zalando/problem-spring-web?tab=readme-ov-file
  - [ ] Testcontainers
  - [ ] extra entities, e.g. players, high scores, etc.
