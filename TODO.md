@@ -4,7 +4,7 @@ add features:
  - [x] @DataJPATest
  - [x] use Zalando Problem for error handling (more useful error messages than HTTP 400 bad request)
      see https://github.com/zalando/problem-spring-web?tab=readme-ov-file
- - [ ] Testcontainers
+ - [x] Testcontainers
  - [ ] extra entities, e.g. players, high scores, etc.
  - [x] throw error on existing game (game with same name)
  - [ ] Use Spring Modulith, which enforces correct package structure with ArchUnit

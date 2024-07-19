@@ -48,8 +48,12 @@ dependencies {
 	testImplementation("io.mockk:mockk:1.13.11")
 	// For whenever instead of `when`
 	testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
-	// for easy JSON (de)serializing in test
+	// for easy JSON (de)serializing in test, though maybe just use kotlinx.serialization?
 	testImplementation("com.google.code.gson:gson:2.8.9")
+	// Try out TestContainers for integration tests
+	testImplementation("org.testcontainers:testcontainers:1.20.0")
+	testImplementation("org.testcontainers:junit-jupiter:1.20.0")
+	// testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
 kotlin {
