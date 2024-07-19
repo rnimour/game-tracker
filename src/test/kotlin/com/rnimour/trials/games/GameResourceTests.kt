@@ -53,8 +53,7 @@ class GameResourceTests {
     @Test
     fun testCreateGame() {
 
-        whenever(gameService.create(gameDTOCreateRequest))
-            .thenReturn(game)
+        whenever(gameService.create(gameDTOCreateRequest)).thenReturn(game)
 
         mockMvc.post("/api/games") {
             contentType = APPLICATION_JSON
@@ -72,8 +71,7 @@ class GameResourceTests {
     @Test
     fun testCreateGameWhichAlreadyExists() {
 
-        whenever(gameService.create(gameDTOCreateRequest))
-            .thenThrow(GameAlreadyExistsException(game.name))
+        whenever(gameService.create(gameDTOCreateRequest)).thenThrow(GameAlreadyExistsException(game.name))
 
         // Create game with name which already exists
         mockMvc.post("/api/games") {
@@ -88,8 +86,7 @@ class GameResourceTests {
     @Test
     fun testReadGame() {
 
-        whenever(gameService.findById(1L))
-            .thenReturn(game)
+        whenever(gameService.findById(1L)).thenReturn(game)
 
         mockMvc.get("/api/games/1") {
             contentType = APPLICATION_JSON
@@ -110,10 +107,8 @@ class GameResourceTests {
         val updateGameRequest = GameDTOUpdateRequest(playStatus = updatedPlayStatus, genre = updatedGenre)
         val updatedGame = game.copy(playStatus = updatedPlayStatus, genre = updatedGenre)
 
-        whenever(gameService.findById(1L))
-            .thenReturn(game)
-        whenever(gameService.updateGame(game, updateGameRequest))
-            .thenReturn(updatedGame)
+        whenever(gameService.findById(1L)).thenReturn(game)
+        whenever(gameService.updateGame(game, updateGameRequest)).thenReturn(updatedGame)
 
         mockMvc.patch("/api/games/1") {
             contentType = APPLICATION_JSON
@@ -129,8 +124,7 @@ class GameResourceTests {
 
         whenever(gameService.findById(1L)).thenReturn(game)
 
-        mockMvc.delete("/api/games/1") {
-        }.andExpectAll {
+        mockMvc.delete("/api/games/1") {}.andExpectAll {
             status { isOk() }
             content { json(game.toJson()) }
         }
@@ -154,8 +148,9 @@ class GameResourceTests {
         }.andExpectAll {
             status { isBadRequest() }
             content {
-                string(Matchers.containsString("problem: Parameter specified as non-null is null"))
-                string(Matchers.containsString("parameter name"))
+                string(Matchers.containsString("JSON parse error"))
+                string(Matchers.matchesRegex(".*Instantiation of \\[.*?GameDTOCreateRequest\\] value failed.*"))
+                string(Matchers.matchesRegex(".*property name due to missing .* value for .* parameter name which is a non-nullable type.*"))
             }
         }
     }
