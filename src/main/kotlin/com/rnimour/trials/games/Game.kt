@@ -1,6 +1,7 @@
 package com.rnimour.trials.games
 
 import com.rnimour.trials.games.PlayStatus.NOT_STARTED
+import com.rnimour.trials.players.Player
 import jakarta.persistence.*
 
 // give a custom sequence with different initial value, because we initialize with some data (see data.sql)
@@ -12,7 +13,7 @@ data class Game(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GAME_SEQ)
     @SequenceGenerator(name = GAME_SEQ, sequenceName = GAME_SEQ, allocationSize = 1, initialValue = 100)
     val id: Long? = null,
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     var name: String,
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -23,6 +24,8 @@ data class Game(
     var developer: String,
     var series: String? = null,
     var genre: String? = null,
+    @ManyToMany(mappedBy = "gamesPlayed", cascade = [CascadeType.ALL])
+    var playersPlaying: MutableList<Player> = mutableListOf(),
 )
 
 enum class PlayStatus(private val description: String) {

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.rnimour.trials.games.PlayStatus.COMPLETED
 import com.rnimour.trials.games.PlayStatus.PLAYING
+import com.rnimour.trials.players.PlayerService
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
@@ -20,16 +21,17 @@ fun GameDTOUpdateRequest.toJson(): String = prettyGson.toJson(this)
 fun Game.toJson(): String = prettyGson.toJson(this)
 
 @WebMvcTest
-class GameResourceTests {
+class GameResourceTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @MockBean
     private lateinit var gameRepository: GameRepository
-
     @MockBean
     private lateinit var gameService: GameService
+    @MockBean
+    private lateinit var playerService: PlayerService
 
     val gameDTOCreateRequest = GameDTOCreateRequest(
         name = "Trackmania",
@@ -86,7 +88,7 @@ class GameResourceTests {
     @Test
     fun testReadGame() {
 
-        whenever(gameService.findById(1L)).thenReturn(game)
+        whenever(gameService.findByIdOrThrow(1L)).thenReturn(game)
 
         mockMvc.get("/api/games/1") {
             contentType = APPLICATION_JSON
@@ -107,10 +109,10 @@ class GameResourceTests {
         val updateGameRequest = GameDTOUpdateRequest(playStatus = updatedPlayStatus, genre = updatedGenre)
         val updatedGame = game.copy(playStatus = updatedPlayStatus, genre = updatedGenre)
 
-        whenever(gameService.findById(1L)).thenReturn(game)
+        whenever(gameService.findByIdOrThrow(1L)).thenReturn(game)
         whenever(gameService.updateGame(game, updateGameRequest)).thenReturn(updatedGame)
 
-        mockMvc.patch("/api/games/1") {
+        mockMvc.put("/api/games/1") {
             contentType = APPLICATION_JSON
             content = updateGameRequest.toJson()
         }.andExpectAll {
@@ -122,7 +124,7 @@ class GameResourceTests {
     @Test
     fun testDeleteGame() {
 
-        whenever(gameService.findById(1L)).thenReturn(game)
+        whenever(gameService.findByIdOrThrow(1L)).thenReturn(game)
 
         mockMvc.delete("/api/games/1") {}.andExpectAll {
             status { isOk() }

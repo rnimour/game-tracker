@@ -9,7 +9,12 @@ import org.zalando.problem.Problem
 import org.zalando.problem.Status
 
 class GameAlreadyExistsException(name: String) : RuntimeException("Game with name $name already exists")
-class GameNotFoundException(id: Long): RuntimeException("Game with id $id not found")
+class GameNotFoundException : RuntimeException {
+    constructor(id: Long) : super("Game with id $id not found")
+    constructor(name: String) : super("Game with name $name not found")
+}
+class GameAlreadyPlayingException(playerName: String, gameName: String) :
+    RuntimeException("Player $playerName is already playing game $gameName")
 
 @ControllerAdvice
 class GameExceptionHandler {
@@ -24,6 +29,12 @@ class GameExceptionHandler {
     @ExceptionHandler(GameAlreadyExistsException::class)
     fun handleGameAlreadyExists(ex: GameAlreadyExistsException): ResponseEntity<Any> = Problem.builder()
         .withTitle(ex.message ?: "Game already exists")
+        .withStatus(Status.CONFLICT)
+        .build().let { ResponseEntity.status(CONFLICT).body(it) }
+
+    @ExceptionHandler(GameAlreadyPlayingException::class)
+    fun handleGameAlreadyPlaying(ex: GameAlreadyPlayingException): ResponseEntity<Any> = Problem.builder()
+        .withTitle(ex.message ?: "Player is already playing this game")
         .withStatus(Status.CONFLICT)
         .build().let { ResponseEntity.status(CONFLICT).body(it) }
 

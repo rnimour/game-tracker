@@ -1,4 +1,4 @@
-package com.rnimour.trials.games
+package com.rnimour.trials
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo

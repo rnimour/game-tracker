@@ -7,12 +7,12 @@
 --     var genre: String? = null,
 
 insert into game (id,
-                   name,
-                   play_status,
-                   release_year,
-                   developer,
-                   series,
-                   genre)
+                  name,
+                  play_status,
+                  release_year,
+                  developer,
+                  series,
+                  genre)
 values (1,
         'The Legend of Zelda: Breath of the Wild',
         'COMPLETED',
@@ -22,12 +22,12 @@ values (1,
         'Action-adventure');
 
 insert into game (id,
-                   name,
-                   play_status,
-                   release_year,
-                   developer,
-                   series,
-                   genre)
+                  name,
+                  play_status,
+                  release_year,
+                  developer,
+                  series,
+                  genre)
 values (2,
         'The Legend of Zelda: Tears of the Kingdom',
         'PLAYING',
@@ -37,12 +37,12 @@ values (2,
         'Action-adventure');
 
 insert into game (id,
-                   name,
-                   play_status,
-                   release_year,
-                   developer,
-                   series,
-                   genre)
+                  name,
+                  play_status,
+                  release_year,
+                  developer,
+                  series,
+                  genre)
 values (3,
         'Factorio',
         'PLAYING',
@@ -52,12 +52,12 @@ values (3,
         'Simulation');
 
 insert into game (id,
-                   name,
-                   play_status,
-                   release_year,
-                   developer,
-                   series,
-                   genre)
+                  name,
+                  play_status,
+                  release_year,
+                  developer,
+                  series,
+                  genre)
 values (4,
         'Tunic',
         'COMPLETED',
@@ -65,3 +65,13 @@ values (4,
         'Isometricorp game',
         null,
         'Action-adventure');
+
+insert into player (id,
+                    name,
+                    favorite_game_id)
+values (-1, -- -1 because I don't want to create a separate sequence for player
+        'ruud',
+        3 -- Factorio
+       );
+
+insert into player_games (player_id, game_id) values (-1, 3);

@@ -2,23 +2,14 @@ package com.rnimour.trials.games
 
 interface GameService {
     /**
-     * Create a Game Entity from a GameDTORequest, and persist it
+     * Create a [Game] from a [GameDTOCreateRequest], and persist it
      * @throws GameAlreadyExistsException if a game with the same name already exists
      */
     fun create(gameRequest: GameDTOCreateRequest): Game
 
     /**
-     * Update (and persist) a Game Entity from a request
-     */
-    fun updateGame(game: Game, gameRequest: GameDTOUpdateRequest): Game
-
-    /**
-     * Transform a Game Entity to a GameDTOResponse
-     */
-    fun transform(game: Game): GameDTOResponse
-
-    /**
      * Get all games
+     * TODO: add pagination/prevent loading too many games
      */
     fun findAll(): List<Game>
 
@@ -26,11 +17,26 @@ interface GameService {
      * Find a game by its id
      * @throws GameNotFoundException if not found
      */
-    fun findById(id: Long): Game
+    fun findByIdOrThrow(id: Long): Game
 
     /**
-     * Delete a game by its id
+     * Update (and persist) a [Game] from a request
+     */
+    fun updateGame(game: Game, gameRequest: GameDTOUpdateRequest): Game
+
+    /**
+     * Transform a [Game] to a [GameDTOResponse]
+     */
+    fun transform(game: Game): GameDTOResponse
+
+    /**
+     * Find a [Game] by its [name]
      * @throws GameNotFoundException if not found
      */
-    fun deleteById(id: Long)
+    fun findByNameOrThrow(name: String): Game
+
+    /**
+     * Delete a [Game]
+     */
+    fun delete(game: Game)
 }

@@ -6,10 +6,16 @@ import org.springframework.http.ResponseEntity.ok
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
+
+/**
+ * Basic CRUD api for games.
+ *
+ * See also [GameExceptionHandler] which catches exceptions thrown by [GameService]
+ */
 @RestController
 @RequestMapping("/api/games")
 class GameResource(
-    val gameService: GameService,
+    private val gameService: GameService,
 ) {
 
     @PostMapping
@@ -22,22 +28,22 @@ class GameResource(
     fun getAllGames(): ResponseEntity<List<Game>> = ok(gameService.findAll())
 
     @GetMapping("/{id}")
-    fun getGame(@PathVariable id: Long): ResponseEntity<Game> = ok(gameService.findById(id))
+    fun getGame(@PathVariable id: Long): ResponseEntity<Game> = ok(gameService.findByIdOrThrow(id))
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     fun updateGame(
         @PathVariable id: Long,
         @RequestBody gameRequest: GameDTOUpdateRequest,
     ): ResponseEntity<Game> {
-        val game = gameService.findById(id)
+        val game = gameService.findByIdOrThrow(id)
         val updatedGame = gameService.updateGame(game, gameRequest)
         return ok(updatedGame)
     }
 
     @DeleteMapping("/{id}")
     fun deleteGame(@PathVariable id: Long): ResponseEntity<Game> {
-        val game = gameService.findById(id)
-        gameService.deleteById(id)
+        val game = gameService.findByIdOrThrow(id)
+        gameService.delete(game)
         return ok(game)
     }
 }
