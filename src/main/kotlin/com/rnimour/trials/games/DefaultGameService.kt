@@ -55,5 +55,6 @@ class DefaultGameService(
     override fun findAll(): List<Game> = gameRepository.findAll()
     override fun findByIdOrThrow(id: Long): Game = gameRepository.findById(id).orElseThrow { GameNotFoundException(id) }
     override fun findByNameOrThrow(name: String): Game = gameRepository.findByName(name) ?: throw GameNotFoundException(name)
+    override fun findByNameOrNull(name: String): Game? = gameRepository.findByName(name)
     override fun delete(game: Game) = gameRepository.delete(game)
 }

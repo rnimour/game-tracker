@@ -1,7 +1,6 @@
 package com.rnimour.trials.games
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.google.gson.*
 import com.rnimour.trials.games.PlayStatus.COMPLETED
 import com.rnimour.trials.games.PlayStatus.PLAYING
 import com.rnimour.trials.players.PlayerService
@@ -13,9 +12,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.*
+import java.lang.reflect.Type
+
 
 // easy way to convert objects to JSON
-val prettyGson: Gson = GsonBuilder().setPrettyPrinting().create()
+val prettyGson: Gson =
+    GsonBuilder().setPrettyPrinting()
+        // actually never mind. This is no longer easy. This is added to serialize empty collections as null
+        .registerTypeHierarchyAdapter(Collection::class.java, IgnoreEmptyCollectionJsonSerializer()).create()
+
 fun GameDTOCreateRequest.toJson(): String = prettyGson.toJson(this)
 fun GameDTOUpdateRequest.toJson(): String = prettyGson.toJson(this)
 fun Game.toJson(): String = prettyGson.toJson(this)
@@ -27,13 +32,15 @@ class GameResourceTest {
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var gameRepository: GameRepository
-    @MockBean
     private lateinit var gameService: GameService
+
+    @MockBean
+    private lateinit var gameRepository: GameRepository
+
     @MockBean
     private lateinit var playerService: PlayerService
 
-    val gameDTOCreateRequest = GameDTOCreateRequest(
+    private val gameDTOCreateRequest = GameDTOCreateRequest(
         name = "Trackmania",
         playStatus = PLAYING,
         releaseYear = 2020,
@@ -42,7 +49,7 @@ class GameResourceTest {
         genre = "Racing",
     )
 
-    val game = Game(
+    private val game = Game(
         id = 123L,
         name = "Trackmania",
         playStatus = PLAYING,
@@ -107,7 +114,8 @@ class GameResourceTest {
         gameDTOCreateRequest.playStatus = updatedPlayStatus
         gameDTOCreateRequest.genre = updatedGenre
         val updateGameRequest = GameDTOUpdateRequest(playStatus = updatedPlayStatus, genre = updatedGenre)
-        val updatedGame = game.copy(playStatus = updatedPlayStatus, genre = updatedGenre)
+        val updatedGame = game.copy(newPlayStatus = updatedPlayStatus, newGenre = updatedGenre)
+        assert(game.playStatus == PLAYING) // do not update the original game
 
         whenever(gameService.findByIdOrThrow(1L)).thenReturn(game)
         whenever(gameService.updateGame(game, updateGameRequest)).thenReturn(updatedGame)
@@ -126,7 +134,9 @@ class GameResourceTest {
 
         whenever(gameService.findByIdOrThrow(1L)).thenReturn(game)
 
-        mockMvc.delete("/api/games/1") {}.andExpectAll {
+        mockMvc.delete("/api/games/1") {
+            contentType = APPLICATION_JSON
+        }.andExpectAll {
             status { isOk() }
             content { json(game.toJson()) }
         }
@@ -150,10 +160,35 @@ class GameResourceTest {
         }.andExpectAll {
             status { isBadRequest() }
             content {
-                string(Matchers.containsString("JSON parse error"))
-                string(Matchers.matchesRegex(".*Instantiation of \\[.*?GameDTOCreateRequest\\] value failed.*"))
-                string(Matchers.matchesRegex(".*property name due to missing .* value for .* parameter name which is a non-nullable type.*"))
+                string(Matchers.containsString("Invalid JSON"))
+                string(Matchers.matchesRegex(".*Field 'name' is required for type .*GameDTOCreateRequest.*"))
             }
         }
     }
+}
+
+private fun Game.copy(newPlayStatus: PlayStatus, newGenre: String): Game = Game(
+    id = id,
+    name = name,
+    playStatus = newPlayStatus,
+    releaseYear = releaseYear,
+    developer = developer,
+    series = series,
+    genre = newGenre,
+)
+
+// the implementation of the completely cursed way to serialize empty collections as null.
+// Since that is how the API returns the data. Yes, behaviour-driven testing.
+// No, not test-driven development, not behaviour-driven development, but behaviour-driven testing.
+private class IgnoreEmptyCollectionJsonSerializer : JsonSerializer<List<*>?> {
+    override fun serialize(src: List<*>?, typeOfSrc: Type?, context: JsonSerializationContext): JsonElement? =
+        if (src == null || src.isEmpty()) null
+        else {
+            // all these scope functions, just to make this an expression body...
+            // All this does is initialize a JsonArray and add all serialized elements to it
+            src.map { context.serialize(it) }
+                .fold(JsonArray()) { array, jsonElement ->
+                    array.apply { add(jsonElement) }
+                }
+        }
 }

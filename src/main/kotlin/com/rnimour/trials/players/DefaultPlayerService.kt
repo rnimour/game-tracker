@@ -1,5 +1,6 @@
 package com.rnimour.trials.players
 
+import com.rnimour.trials.games.Game
 import com.rnimour.trials.games.GameAlreadyPlayingException
 import com.rnimour.trials.games.GameService
 import org.springframework.stereotype.Component
@@ -17,8 +18,8 @@ class DefaultPlayerService(
         val player = with(playerRequest) {
             Player(
                 name = name,
-                favoriteGame = favoriteGame,
-                gamesPlayed = gamesPlayed,
+                favoriteGame = determineGame(favoriteGame),
+                gamesPlayed = determineGamesPlayed(gamesPlayed),
             )
         }
         return playerRepository.save(player)
@@ -30,8 +31,9 @@ class DefaultPlayerService(
     ): Player {
         with(player) {
             name = playerRequest.name ?: name
-            favoriteGame = playerRequest.favoriteGame ?: favoriteGame
-            gamesPlayed = playerRequest.gamesPlayed ?: gamesPlayed
+            favoriteGame = determineGame(playerRequest.favoriteGame) ?: favoriteGame
+            // if games played is null, keep the current list. Otherwise, update it
+            gamesPlayed = playerRequest.gamesPlayed?.let { determineGamesPlayed(it) } ?: gamesPlayed
         }
         return playerRepository.save(player)
     }
@@ -40,8 +42,8 @@ class DefaultPlayerService(
         PlayerDTOResponse(
             id = id ?: throw IllegalArgumentException("Player not persisted"),
             name = name,
-            favoriteGame = favoriteGame,
-            gamesPlayed = gamesPlayed,
+            favoriteGame = favoriteGame?.name,
+            gamesPlayed = gamesPlayed.map { it.name }.toMutableList(),
         )
     }
 
@@ -56,4 +58,9 @@ class DefaultPlayerService(
             throw GameAlreadyPlayingException(player.name, game.name)
         return playerRepository.save(player)
     }
+
+    private fun determineGame(favoriteGame: String?): Game? =
+        favoriteGame?.let { gameService.findByNameOrNull(it) }
+    private fun determineGamesPlayed(gamesPlayed: MutableList<String>): MutableList<Game> =
+        gamesPlayed.mapNotNull { gameService.findByNameOrNull(it) }.toMutableList()
 }

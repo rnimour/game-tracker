@@ -10,6 +10,7 @@ add features:
  - [x] throw error on existing game (game with same name)
  - [ ] Use Spring Modulith, which enforces correct package structure with ArchUnit
      see https://spring.io/projects/spring-modulith#overview, https://www.archunit.org/
+   - [ ] add the rule "no repository should be accessed from a controller"
  - [x] whenever instead of `when`
  - [ ] add pagination/prevent loading too many entities
  - [ ] merge exception handling for player and game?

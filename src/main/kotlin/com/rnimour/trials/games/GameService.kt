@@ -36,6 +36,12 @@ interface GameService {
     fun findByNameOrThrow(name: String): Game
 
     /**
+     * Find a [Game] by its [name]
+     * @return null if not found
+     */
+    fun findByNameOrNull(name: String): Game?
+
+    /**
      * Delete a [Game]
      */
     fun delete(game: Game)

@@ -1,24 +1,25 @@
 package com.rnimour.trials.players
 
-import com.rnimour.trials.games.Game
+import kotlinx.serialization.Serializable
 
-// jackson-module-kotlin automatically infers JSON property names for these DTO objects
-
+@Serializable
 data class PlayerDTOCreateRequest(
     var name: String,
-    var favoriteGame: Game? = null,
-    var gamesPlayed: MutableList<Game> = mutableListOf(),
+    var favoriteGame: String? = null,
+    var gamesPlayed: MutableList<String> = mutableListOf(),
 )
 
+@Serializable
 data class PlayerDTOUpdateRequest(
     var name: String? = null,
-    var favoriteGame: Game? = null,
-    var gamesPlayed: MutableList<Game> = mutableListOf(),
+    var favoriteGame: String? = null,
+    var gamesPlayed: MutableList<String>? = null, // null to allow not changing this list
 )
 
+@Serializable
 data class PlayerDTOResponse(
     var id: Long?,
     var name: String?,
-    var favoriteGame: Game?,
-    var gamesPlayed: MutableList<Game> = mutableListOf(),
+    var favoriteGame: String?,
+    var gamesPlayed: MutableList<String> = mutableListOf(),
 )

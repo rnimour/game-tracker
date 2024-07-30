@@ -3,12 +3,14 @@ package com.rnimour.trials.games
 import com.rnimour.trials.games.PlayStatus.NOT_STARTED
 import com.rnimour.trials.players.Player
 import jakarta.persistence.*
+import kotlinx.serialization.Serializable
 
 // give a custom sequence with different initial value, because we initialize with some data (see data.sql)
 private const val GAME_SEQ = "game_seq"
 
 @Entity
-data class Game(
+@Serializable
+class Game(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GAME_SEQ)
     @SequenceGenerator(name = GAME_SEQ, sequenceName = GAME_SEQ, allocationSize = 1, initialValue = 100)
@@ -26,7 +28,11 @@ data class Game(
     var genre: String? = null,
     @ManyToMany(mappedBy = "gamesPlayed", cascade = [CascadeType.ALL])
     var playersPlaying: MutableList<Player> = mutableListOf(),
-)
+) {
+    // override fun toString(): String {
+    //     return "Game(id=$id, name='$name', playStatus=$playStatus, releaseYear=$releaseYear, developer='$developer', series=$series, genre=$genre, playersPlaying=$playersPlaying)"
+    // }
+}
 
 enum class PlayStatus(private val description: String) {
     NOT_STARTED("Not Started"),
